@@ -51,7 +51,7 @@ def process_excel_file():
         return
     else:
         wb.save(os.path.join(output_dir, final_file_name))
-    print("Saved.")
+    messagebox.showinfo("", "Fichier traité et créé.")
 
 
 def apply_styles(wb):
@@ -162,34 +162,6 @@ def create_excel_file(buyer_groups):
     return wb
 
 
-def create_excel_styles():
-    return {
-        "header": NamedStyle(
-            name="header",
-            font=Font(bold=True, color="FFFFFF"),
-            fill=PatternFill("solid", fgColor="505050"),
-        ),
-        "sell": NamedStyle(name="sell", font=Font(color="DD0000")),
-        "recyclebin": NamedStyle(fill=PatternFill("solid", fgColor="80D0FF")),
-        "subtotal": NamedStyle(
-            name="subtotal",
-            font=Font(bold=True, color="000000"),
-            fill=PatternFill("solid", fgColor="A0A0A0"),
-        ),
-        "neg_result": NamedStyle(
-            name="neg_result",
-            font=Font(bold=True),
-            fill=PatternFill("solid", fgColor="FFc520"),
-        ),
-        "neg_result_lines": NamedStyle(
-            name="neg_result_lines", fill=PatternFill("solid", fgColor="FFc520")
-        ),
-        "yellow_fill": PatternFill("solid", fgColor="FFFF00"),
-        "blue_fill": PatternFill("solid", fgColor="4080FF"),
-        "red_font": Font(color="FF0000"),
-    }
-
-
 def process_dataframe(df):
     # Ajouter une colonne temporaire pour stocker les formats de ligne
     df["row_format"] = ""
@@ -267,7 +239,6 @@ def calculate_subtotals(lot_df: pd.DataFrame):
 def clean_dataframe(excel_file: str):
     """Supprime les doublons et les colonnes/lignes inutiles du DataFrame."""
     df = pd.read_excel(excel_file)
-    df.to_csv("temp1.csv", index=False)
     df.drop_duplicates(inplace=True)
     df.sort_values(by=["Lot", "TYPE"], inplace=True)
     df = df[df["Code C/F"] != "-REGUL"]
@@ -276,7 +247,6 @@ def clean_dataframe(excel_file: str):
     )
     # Supprimer l'index du DataFrame
     df.reset_index(drop=True, inplace=True)
-    df.to_csv("temp2.csv", index=False)
     if df.empty:
         raise ValueError("Le fichier Excel est vide")
     return df
@@ -290,9 +260,7 @@ def open_file() -> str:
         )
         if not file_path:
             print("Aucun fichier sélectionné")
-        wb = load_workbook(file_path)
-        wb.save(TEMP_FILE)
-        return TEMP_FILE
+        return file_path
     except Exception as e:
         raise ValueError(
             f"Une erreur est survenue lors de la sélection du fichier: {e}"
