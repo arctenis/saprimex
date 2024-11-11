@@ -1,5 +1,5 @@
 """
-Tkinter gUI application to process Excel files
+Application Tkinter pour traiter et formater des fichiers Excel
 """
 
 import os
@@ -37,7 +37,7 @@ output_dir = ""
 
 def process_excel_file():
     """
-    Function called when the "Open" button is clicked.
+    Fonction principale appelée lorsque le bouton "Ouvrir" est cliqué.
     """
     excel_file = open_file()
     df = clean_dataframe(excel_file)
@@ -56,9 +56,8 @@ def process_excel_file():
 
 def apply_styles(wb):
     """
-    Read a temp keyword in each row to apply specific styles.
-    Delete temp columns
-    wb : openpyxl Workbook
+    Vérifie si un mot-clé est présent sur chacune des lignes et applique des styles spécifiques.
+    Efface les colonnes temporaires.
     """
     ws = wb.active
     thin = Side(border_style="thin", color="000000")
@@ -89,14 +88,14 @@ def apply_styles(wb):
                     cell.fill = PatternFill(fgColor=LIGHTGRAY)
                     cell.font = Font(bold=True, color=BLACK)
             cell.border = Border(left=thin, right=thin, top=thin, bottom=thin)
-    # Delete useless last columns
+    # Supprimer les colonnes inutiles
     ws.delete_cols(10, amount=4)
-    # Adjust column widths
+    # Ajuster la largeur des colonnes
     for col in ws.columns:
         max_length = 0
         col_letter = col[0].column_letter  # Lettre de la colonne (A, B, C, ...)
 
-        # Calculer la largeur maximale dans chaque colonne
+        # Calculer la largeur maximale dans chaque colonne (pour chaque cellule)
         for cell in col:
             if cell.value:
                 max_length = max(max_length, len(str(cell.value)))
@@ -104,7 +103,7 @@ def apply_styles(wb):
         # Ajuster la largeur de la colonne
         adjusted_width = (max_length + 2) * 1.2  # Ajout de marge pour plus d'esthétique
         ws.column_dimensions[col_letter].width = adjusted_width
-    # Insert date before the first row
+    # Insérer la date avant la première ligne
     ws.insert_rows(1)
     ws["A1"] = f"ARRIVAGES DU {datetime.now().strftime("%d/%m/%y")}"
     ws["A1"].font = Font(bold=True, color=RED)
@@ -192,20 +191,20 @@ def create_excel_styles():
 
 
 def process_dataframe(df):
-    # Add a temporary column to store row formats
+    # Ajouter une colonne temporaire pour stocker les formats de ligne
     df["row_format"] = ""
     lot_df = divide_by_lot(df)
     lots = [calculate_subtotals(lot_df) for lot_df in lot_df]
-    # Group lots by sellers ("Raison C/F"/"TYPE")
-    # "TYPE" must be "ACHAT"
+    # Grouper les lots par vendeur ("Raison C/F"/"TYPE")
+    # "TYPE" doit être "ACHAT"
     buyers = group_by_buyers(lots)
     return buyers
 
 
 def group_by_buyers(lots):
     """
-    Each lot has one seller ("Raison C/F"/"TYPE")
-    Groupe lots by sellers and append lots list to buyer_groups list
+    Chaque lot a un vendeur ("Raison C/F"/"TYPE")
+    Groupe les lots par vendeur et ajoute la liste des lots à buyer_groups
     """
     buyer_groups = []
     current_buyer = lots[0]["df"]["Raison C/F"][0]
@@ -223,17 +222,14 @@ def group_by_buyers(lots):
 
 def divide_by_lot(df):
     """
-    Returns a list of DataFrames, one for each lot.
-    Only the first 11 characters of the lot number are considered.
+    Renvoie une liste de DataFrames, un pour chaque lot.
+    Seulement les 11 premières lettres du numéro de lot sont considérées.
     """
     lot_dataframes = []
-    # Only the first 11 characters of the lot number are considered
+    # Seulement les 11 premières lettres du numéro de lot sont considérées
     current_lot_number = str(df["Lot"][0][:11])
-    # Initialize the current lot dataframe with the same columns as the original dataframe
+    # Initialiser la dataframe courante avec les mêmes colonnes que la dataframe originale
     current_lot_dataframe = pd.DataFrame(columns=df.columns)
-    # current_lot_dataframe = pd.concat(
-    #     [current_lot_dataframe, df.iloc[0]], ignore_index=True
-    # )
     for _, row in df.iterrows():
         if row["TYPE"] == "ACHAT" or row["TYPE"] == "VENTE":
             if str(row["Lot"])[:11] == current_lot_number:
@@ -253,7 +249,7 @@ def divide_by_lot(df):
 
 def calculate_subtotals(lot_df: pd.DataFrame):
     """
-    Add a new row after each lot with the subtotal of "Poids" and "Résultat"
+    Ajoute une nouvelle ligne après chaque lot avec le sous-total de "Poids" et "Résultat"
     """
     lot_df["Poids"] = lot_df["Poids"].astype(float)
     lot_df["Résultat"] = lot_df["Résultat"].astype(float)
@@ -269,7 +265,7 @@ def calculate_subtotals(lot_df: pd.DataFrame):
 
 
 def clean_dataframe(excel_file: str):
-    """Remove duplicates and unwanted columns/rows from the DataFrame."""
+    """Supprime les doublons et les colonnes/lignes inutiles du DataFrame."""
     df = pd.read_excel(excel_file)
     df.to_csv("temp1.csv", index=False)
     df.drop_duplicates(inplace=True)
@@ -278,7 +274,7 @@ def clean_dataframe(excel_file: str):
     df.drop(
         columns=["Code C/F", "Commande", "Article", "Colis", "Pièces"], inplace=True
     )
-    # Remove index from dataframe
+    # Supprimer l'index du DataFrame
     df.reset_index(drop=True, inplace=True)
     df.to_csv("temp2.csv", index=False)
     if df.empty:
