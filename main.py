@@ -101,7 +101,7 @@ def apply_styles(wb):
                 max_length = max(max_length, len(str(cell.value)))
 
         # Ajuster la largeur de la colonne
-        adjusted_width = (max_length + 2) * 1.2  # Ajout de marge pour plus d'esthétique
+        adjusted_width = (max_length + 2) * 1.2
         ws.column_dimensions[col_letter].width = adjusted_width
     # Insérer la date avant la première ligne
     ws.insert_rows(1)
