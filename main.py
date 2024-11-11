@@ -310,7 +310,7 @@ def select_output_directory():
             show_warning("Aucun répertoire sélectionné.")
             return
         output_dir = selected_dir
-        directory_label.config(text=f"Répertoire sélectionné : {output_dir}")
+        directory_label.config(text=f"{output_dir}")
         return output_dir
     except Exception as e:
         raise ValueError(
@@ -321,8 +321,12 @@ def select_output_directory():
 def run():
     root = tk.Tk()
     root.title("Saprimex")
-    root.geometry("400x300")
+    root.geometry("400x400")
     root.resizable(False, False)
+
+    logo = tk.PhotoImage(file="logo.png")
+    logo_label = tk.Label(root, image=logo)
+    logo_label.pack(pady=20)
 
     open_button = tk.Button(root, text="Ouvrir", command=process_excel_file)
     open_button.pack(pady=20)
@@ -332,9 +336,12 @@ def run():
     )
     output_dir_button.pack(pady=20)
 
+    select_label = tk.Label(root, text="Répertoire sélectionné :")
+    select_label.pack(pady=10)
+
     global directory_label
-    directory_label = tk.Label(root, text=f"Répertoire sélectionné : {output_dir}")
-    directory_label.pack(pady=20)
+    directory_label = tk.Label(root, text=f"{output_dir}")
+    directory_label.pack(pady=10)
 
     root.mainloop()
 
