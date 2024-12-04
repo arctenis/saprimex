@@ -4,7 +4,6 @@ Application Tkinter pour traiter et formater des fichiers Excel
 
 import os
 import tkinter as tk
-from datetime import datetime
 from tkinter import filedialog, messagebox
 
 import pandas as pd
@@ -28,8 +27,8 @@ YELLOW = "FFFF00"
 RED = "FF0000"
 LIGHTBLUE = "A0D0FF"
 GRAY = "808080"
-DARKGRAY = "A0A0A0"
-LIGHTGRAY = "D0D0D0"
+DARKGRAY = "B0B0B0"
+LIGHTGRAY = "E0E0E0"
 WHITE = "FFFFFF"
 BLACK = "000000"
 
@@ -115,11 +114,8 @@ def create_excel_file(buyer_groups):
     for group in buyer_groups:
         group_total = 0
         ws.append(HEADERS)
-        print("-----------------------")
         for lot in group:
-            print(lot["result_total"])
             group_total += lot["result_total"]
-            print("Total : ", group_total)
             for r in dataframe_to_rows(lot["df"], index=False, header=False):
                 if lot["result_total"] < 0:
                     r.append("negative")
