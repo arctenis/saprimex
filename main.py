@@ -85,7 +85,7 @@ def apply_styles(wb) -> Workbook:
             if cell.value == "Sous-total":
                 for cell in row:
                     cell.fill = PatternFill(fgColor=LIGHTGRAY)
-                    cell.font = Font(bold=True, color=BLACK)
+                    cell.font = Font(color=BLACK)
             if cell.value == "Total":
                 for cell in row:
                     cell.fill = PatternFill(fgColor=DARKGRAY)
@@ -112,11 +112,14 @@ def apply_styles(wb) -> Workbook:
 def create_excel_file(buyer_groups):
     wb = Workbook()
     ws = wb.active
-    group_total = 0
     for group in buyer_groups:
+        group_total = 0
         ws.append(HEADERS)
+        print("-----------------------")
         for lot in group:
+            print(lot["result_total"])
             group_total += lot["result_total"]
+            print("Total : ", group_total)
             for r in dataframe_to_rows(lot["df"], index=False, header=False):
                 if lot["result_total"] < 0:
                     r.append("negative")
@@ -205,7 +208,9 @@ def create_excel_styles():
 def process_dataframe(df):
     # Ajouter une colonne temporaire pour stocker les formats de ligne
     df["row_format"] = ""
+    # Diviser les données par lot
     lot_df = divide_by_lot(df)
+    # Calculer les sous-totaux
     lots = [calculate_subtotals(lot_df) for lot_df in lot_df]
     # Grouper les lots par vendeur ("Raison C/F"/"TYPE")
     # "TYPE" doit être "ACHAT"
