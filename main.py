@@ -32,6 +32,18 @@ LIGHTGRAY = "E0E0E0"
 WHITE = "FFFFFF"
 BLACK = "000000"
 
+COULEUR_ENTETE = WHITE
+COULEUR_VENTE = RED
+COULEUR_CORBEILLE = LIGHTBLUE
+COULEUR_FOND_RES_POSITIF = LIGHTGRAY
+COULEUR_FOND_RES_NEGATIF = YELLOW
+COULEUR_FOND_SOUS_TOTAL = DARKGRAY
+COULEUR_FOND_TOTAL = BLACK
+COULEUR_POLICE_RES_POSITIF = RED
+COULEUR_POLICE_RES_NEGATIF = YELLOW
+COULEUR_POLICE_SOUS_TOTAL = BLACK
+COULEUR_POLICE_TOTAL = WHITE
+
 output_dir = "G:\\AGNES\\MARGES\\MARGES_PAR_ARRIVAGES"
 
 
@@ -67,28 +79,28 @@ def apply_styles(wb) -> Workbook:
             if cell.value == "TYPE":
                 for cell in row:
                     cell.fill = PatternFill("solid", fgColor=GRAY)
-                    cell.font = Font(bold=True, color=WHITE)
+                    cell.font = Font(bold=True, color=COULEUR_ENTETE)
             if cell.value == "VENTE":
                 for cell in row:
-                    cell.font = Font(color=RED)
+                    cell.font = Font(color=COULEUR_VENTE)
             if cell.value == "Corbeille":
                 for cell in row:
-                    cell.fill = PatternFill("solid", fgColor=LIGHTBLUE)
+                    cell.fill = PatternFill("solid", fgColor=COULEUR_CORBEILLE)
             # if cell.value == "negative":
             #     for cell in row:
             #         cell.fill = PatternFill("solid", fgColor=YELLOW)
             #         cell.font = Font(color="FF0000", bold=True)
             if cell.value == "neg_result":
-                row[8].fill = PatternFill("solid", fgColor=YELLOW)
-                row[8].font = Font(color=RED, bold=True)
+                row[8].fill = PatternFill("solid", fgColor=COULEUR_FOND_RES_NEGATIF)
+                row[8].font = Font(color=COULEUR_POLICE_RES_NEGATIF, bold=True)
             if cell.value == "Sous-total":
                 for cell in row:
-                    cell.fill = PatternFill(fgColor=LIGHTGRAY)
-                    cell.font = Font(color=BLACK)
+                    cell.fill = PatternFill(fgColor=COULEUR_FOND_SOUS_TOTAL)
+                    cell.font = Font(color=COULEUR_POLICE_SOUS_TOTAL)
             if cell.value == "Total":
                 for cell in row:
-                    cell.fill = PatternFill(fgColor=DARKGRAY)
-                    cell.font = Font(bold=True, color=BLACK)
+                    cell.fill = PatternFill(fgColor=COULEUR_FOND_TOTAL)
+                    cell.font = Font(bold=True, color=COULEUR_POLICE_TOTAL)
             # cell.border = Border(left=thin, right=thin, top=thin, bottom=thin)
     # Supprimer les colonnes inutiles
     ws.delete_cols(10, amount=4)
